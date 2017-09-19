@@ -527,4 +527,22 @@ NSString *const MFPAuthorizationTypeCode = @"code";
 }
 
 
+-(void)restoreTokenFromPreviousVersionsWithURL:(NSURL*)url{
+    NSDictionary *params =  [MFPUtilities queryStringToDictionary:[url query]];
+    MFPAuthorizationResponse *response = [[MFPAuthorizationResponse alloc] initWithData:params error:nil
+                                                                             statusCode:0 // Is overridden in constructor
+                                                                            permissions:@[MFPPermissionTypeDiary]];
+    if ([response accessTokenData]) {
+        _accessTokenData = [[response accessTokenData] copy];
+        if ([_accessTokenData accessToken]) {
+            [self storeAccessTokenData:_accessTokenData forCacheKey:_cacheKey];
+            [self setIsOpen:YES];
+        } else if ([_accessTokenData authorizationCode]) {
+            // For authorization code, we set it in _accessTokenData but the session is not live
+            [self setIsOpen:NO];
+        }
+    }
+}
+
+
 @end

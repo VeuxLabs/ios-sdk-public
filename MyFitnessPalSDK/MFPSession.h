@@ -231,4 +231,6 @@ extern NSString *const MFPAuthorizationTypeCode;
  */
 - (void)close;
 
+-(void)restoreTokenFromPreviousVersionsWithURL:(NSURL*)url;
+
 @end
